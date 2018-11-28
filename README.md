@@ -68,7 +68,7 @@ this.$api.request(myurl);
 this.$api.openLocation(0, 0);
 ```
 
-Check [here](./src/lib/simplified-args.js) to see what api can be simplified.
+Check [here](./packages/lib/simplified-args.js) to see what api can be simplified.
 
 ### Set up platform string as a global variable
 
