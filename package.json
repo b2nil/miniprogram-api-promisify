@@ -1,0 +1,36 @@
+{
+	"name": "miniprogram-api-promisify",
+	"version": "0.1.0",
+	"description": "A plugin that promisifies api calls for Vue-based miniprogram frameworks",
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "babel packages -d dist"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/b2nil/miniprogram-api-promisify.git"
+	},
+	"keywords": [
+		"api promisify",
+		"promises",
+		"miniprogram",
+		"Vue",
+		"megalo",
+		"mpVue"
+	],
+	"author": "Ken Ho <kakenkun@gmail.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/b2nil/miniprogram-api-promisify/issues"
+	},
+	"homepage": "https://github.com/b2nil/miniprogram-api-promisify#readme",
+	"devDependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-preset-env": "^1.7.0",
+		"babel-preset-stage-1": "^6.24.1"
+	},
+	"dependencies": {}
+}
