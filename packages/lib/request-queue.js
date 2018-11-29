@@ -1,6 +1,6 @@
-'use restrict'
+'use strict'
 
-module.export = function(api) {
+function requestQueue(api) {
 	let Queue = {
 		map: {},
 		mq: [],
@@ -44,4 +44,8 @@ module.export = function(api) {
 	}
 
 	return Queue
+}
+
+module.exports = {
+	requestQueue
 }
