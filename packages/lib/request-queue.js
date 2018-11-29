@@ -1,27 +1,27 @@
 'use restrict'
 
 module.export = function(api) {
-	return {
+	let Queue = {
 		map: {},
 		mq: [],
 		running: [],
 		MAX_REQUEST: 5,
 		push(param) {
 			param.t = +new Date()
-			while (this.mq.indexOf(param.t) > -1 || this.running.indexOf(param.t) > -1) {
+			while (Queue.mq.indexOf(param.t) > -1 || Queue.running.indexOf(param.t) > -1) {
 				param.t += (Math.random() * 10) >> 0
 			}
-			this.mq.push(param.t)
-			this.map[param.t] = param
+			Queue.mq.push(param.t)
+			Queue.map[param.t] = param
 		},
 		next() {
-			let me = this
+			let me = Queue
 
-			if (this.mq.length === 0) return
+			if (Queue.mq.length === 0) return
 
-			if (this.running.length < this.MAX_REQUEST - 1) {
-				let newone = this.mq.shift()
-				let obj = this.map[newone]
+			if (Queue.running.length < Queue.MAX_REQUEST - 1) {
+				let newone = Queue.mq.shift()
+				let obj = Queue.map[newone]
 				let oldComplete = obj.complete
 				obj.complete = (...args) => {
 					me.running.splice(me.running.indexOf(obj.t), 1)
@@ -29,7 +29,7 @@ module.export = function(api) {
 					oldComplete && oldComplete.apply(obj, args)
 					me.next()
 				}
-				this.running.push(obj.t)
+				Queue.running.push(obj.t)
 				return api.request(obj)
 			}
 		},
@@ -37,9 +37,11 @@ module.export = function(api) {
 			obj = obj || {}
 			obj = typeof obj === 'string' ? { url: obj } : obj
 
-			this.push(obj)
+			Queue.push(obj)
 
-			return this.next()
+			return Queue.next()
 		}
 	}
+
+	return Queue
 }

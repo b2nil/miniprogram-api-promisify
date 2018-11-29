@@ -81,7 +81,7 @@ var index = {
 						fixArgs.success = successFn
 						fixArgs.fail = failFn
 						if (requestFix && key === 'request') {
-							return requestQueue(api).request(fixArgs)
+							return requestQueue(api).request.call(api, fixArgs)
 						}
 						return api[key].call(api, fixArgs)
 					},
