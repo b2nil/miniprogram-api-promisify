@@ -1,6 +1,6 @@
 {
 	"name": "miniprogram-api-promisify",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "A plugin that promisifies api calls for Vue-based miniprogram frameworks",
 	"main": "dist/index.js",
 	"files": [
