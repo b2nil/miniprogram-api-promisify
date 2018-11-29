@@ -4,6 +4,7 @@ import { promisify } from './lib/promisify'
 import { ignoreList } from './lib/ignore-list'
 import { simplifyArgs } from './lib/simplified-args'
 import { makeObj } from './lib/utils'
+import { requestQueue } from './lib/request-queue'
 
 /**
  * Basic api promisify plugin for Vue-based miniprogram frameworks
@@ -18,6 +19,7 @@ var index = {
 		_Vue = Vue
 
 		let platform = 'wechat',
+			requestFix = true,
 			ignore
 		if (options) {
 			platform = options.platform
@@ -78,6 +80,9 @@ var index = {
 						}
 						fixArgs.success = successFn
 						fixArgs.fail = failFn
+						if (requestFix && key === 'request') {
+							return requestQueue(api).request(fixArgs)
+						}
 						return api[key].call(api, fixArgs)
 					},
 					_api,
