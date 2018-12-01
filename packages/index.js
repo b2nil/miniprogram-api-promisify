@@ -54,6 +54,8 @@ var index = {
 			} else {
 				noPromiseMap = Object.assign({}, makeObj(ignoreList), ignore)
 			}
+		} else {
+			noPromiseMap = Object.assign({}, makeObj(ignoreList))
 		}
 
 		Object.keys(_api).forEach((key) => {
