@@ -9,24 +9,17 @@ import { requestQueue } from './lib/request-queue'
 /**
  * Basic api promisify plugin for Vue-based miniprogram frameworks
  * @param   {import("vue").VueConstructor}  Vue   Vue constructor
- * @param   {Object}   options    options may contain two properties: platform and ignore
+ * @param   {Object}   options    options may contain three properties: platform, ignore and requestFix
  */
 let _Vue
 var index = {
-	install(Vue, options) {
+	install(Vue, { platform = 'wechat', ignore, requestFix = true } = {}) {
 		if (this.installed && _Vue === Vue) return
 		this.installed = true
 		_Vue = Vue
 
-		let platform = 'wechat',
-			requestFix = true,
-			ignore
-		if (options) {
-			platform = options.platform
-			ignore = options.ignore
-		}
 		if ($platform) {
-			// get platform string from webpack.DefinePlugin()
+			// get platform string from global variable set by webpack.DefinePlugin()
 			platform = $platform
 		}
 
@@ -80,8 +73,17 @@ var index = {
 								})
 							}
 						}
-						fixArgs.success = successFn
-						fixArgs.fail = failFn
+
+						// Just in case when a key that should be ignored is not added in the built-in list,
+						// warn the use to add it to ignore list manually when registering the plugin.
+						try {
+							fixArgs.success = successFn
+							fixArgs.fail = failFn
+						} catch (e) {
+							console.log(`警告：'${key}' 不支持 Promise 化。请在注册插件时，手动将其添加至参数的 ignore 清单中。`)
+							console.log(e)
+						}
+
 						if (requestFix && key === 'request') {
 							return requestQueue(api).request.call(api, fixArgs)
 						}
