@@ -27,7 +27,7 @@ const toBeNormalized = {
 	getUserInfo: 'getAuthUserInfo'
 }
 
-function normalizePromisifiedAlipayApis(key, api) {
+function normalizePromisifiedAlipayApis(key, keyAlias, api) {
 	return (options) => {
 		let task = null
 
@@ -35,7 +35,7 @@ function normalizePromisifiedAlipayApis(key, api) {
 			api
 				[key](options)
 				.then((res) => {
-					switch (key) {
+					switch (keyAlias) {
 						case 'saveFile':
 							res.savedFilePath = res.apFilePath
 							break
@@ -78,12 +78,12 @@ function normalizePromisifiedAlipayApis(key, api) {
 			task = api[key](options)
 		})
 
-		if (key === 'uploadFile' || key === 'downloadFile') {
+		if (keyAlias === 'uploadFile' || keyAlias === 'downloadFile') {
 			promise.progress = progress(task, promise)
 			promise.abort = abort(task, promise)
 		}
 
-		if (key === 'httpRequest') {
+		if (keyAlias === 'httpRequest') {
 			promise.abort = abort(task, promise)
 		}
 

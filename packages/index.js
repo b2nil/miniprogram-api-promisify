@@ -56,7 +56,7 @@ var index = {
 			noPromiseMap = Object.assign({}, noPromiseApis)
 		}
 
-		// TODO: expose abort and progressUpdate methods
+		// TODO: expose abort and progressUpdate methods of network apis
 		Object.keys(baseApis).forEach((key) => {
 			if (!noPromiseMap[key] && !onAndSyncApis[key] && key.substr(0, 2) !== 'on' && key.substr(-4) !== 'Sync') {
 				baseApis[key] = promisify(
@@ -83,7 +83,7 @@ var index = {
 						}
 
 						if (platform === 'alipay') {
-							const r = genSpecialApis(key, fixArgs) // 抹平 alipay 小程序 api 名称及参数差异
+							const r = genSpecialApis(key, fixArgs) // 抹平 alipay 小程序 api 名称及入参差异
 							const newKey = r.key
 							fixArgs = Object.assign({}, r.options)
 
@@ -127,16 +127,6 @@ var index = {
 					baseApis,
 					'weapp-fix'
 				)
-
-				// 抹平 alipay api 返回结果的差异
-				// TODO: not working right now, consider to put it into promisify function
-				if (platform === 'alipay') {
-					for (let k in toBeNormalized) {
-						if (k === key) {
-							baseApis[toBeNormalized[k]] = normalizePromisifiedAlipayApis(toBeNormalized[k], api)
-						}
-					}
-				}
 			} else {
 				// 处理不支持 promise 化的 api 差异
 				if (platform === 'alipay') {
@@ -144,6 +134,15 @@ var index = {
 				}
 			}
 		})
+
+		// 抹平 alipay api 返回结果的差异
+		if (platform === 'alipay') {
+			let bak = {}
+			for (let key in toBeNormalized) {
+				bak[key] = baseApis[key]
+				baseApis[key] = normalizePromisifiedAlipayApis(key, toBeNormalized[key], bak)
+			}
+		}
 
 		Object.defineProperty(Vue.prototype, '$api', {
 			get() {
