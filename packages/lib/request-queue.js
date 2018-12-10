@@ -5,7 +5,7 @@ function requestQueue(api, key) {
 		map: {},
 		mq: [],
 		running: [],
-		MAX_REQUEST: 5,
+		MAX_REQUEST: 10,
 		push(options) {
 			options.t = +new Date()
 			while (Queue.mq.indexOf(options.t) > -1 || Queue.running.indexOf(options.t) > -1) {
