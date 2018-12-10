@@ -1,18 +1,18 @@
 'use strict'
 
-function requestQueue(api) {
+function requestQueue(api, key) {
 	let Queue = {
 		map: {},
 		mq: [],
 		running: [],
 		MAX_REQUEST: 5,
-		push(param) {
-			param.t = +new Date()
-			while (Queue.mq.indexOf(param.t) > -1 || Queue.running.indexOf(param.t) > -1) {
-				param.t += (Math.random() * 10) >> 0
+		push(options) {
+			options.t = +new Date()
+			while (Queue.mq.indexOf(options.t) > -1 || Queue.running.indexOf(options.t) > -1) {
+				options.t += (Math.random() * 10) >> 0
 			}
-			Queue.mq.push(param.t)
-			Queue.map[param.t] = param
+			Queue.mq.push(options.t)
+			Queue.map[options.t] = options
 		},
 		next() {
 			let me = Queue
@@ -20,25 +20,21 @@ function requestQueue(api) {
 			if (Queue.mq.length === 0) return
 
 			if (Queue.running.length < Queue.MAX_REQUEST - 1) {
-				let newone = Queue.mq.shift()
-				let obj = Queue.map[newone]
-				let oldComplete = obj.complete
-				obj.complete = (...args) => {
-					me.running.splice(me.running.indexOf(obj.t), 1)
-					delete me.map[obj.t]
-					oldComplete && oldComplete.apply(obj, args)
+				let newOpts = Queue.mq.shift()
+				let options = Queue.map[newOpts]
+				let completeFunc = options.complete
+				options.complete = (...args) => {
+					me.running.splice(me.running.indexOf(options.t), 1)
+					delete me.map[options.t]
+					completeFunc && completeFunc.apply(options, args)
 					me.next()
 				}
-				Queue.running.push(obj.t)
-				return api.request(obj)
+				Queue.running.push(options.t)
+				return api[key](options)
 			}
 		},
-		request(obj) {
-			obj = obj || {}
-			obj = typeof obj === 'string' ? { url: obj } : obj
-
-			Queue.push(obj)
-
+		request(options) {
+			Queue.push(options)
 			return Queue.next()
 		}
 	}
