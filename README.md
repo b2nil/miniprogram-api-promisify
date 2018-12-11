@@ -103,8 +103,10 @@ Vue.use(promisify, {
 
 ## Todo
 
-- [ ] Isomorphic api calls for different miniprogram platforms
+- [x] Isomorphic api calls for different miniprogram platforms
+- [ ] expose abort and progressUpdate methods for related network apis
 
 ## Credits
 
-This project is basically a wrapper of [wepy's](https://github.com/Tencent/wepy/tree/2.0.x/packages/use-promisify) `use-promisify` library as a plugin for Vue-based miniprogram frameworks, with enhancement to support alipay and baidu miniprogram apis as well.
+- [wepy's](https://github.com/Tencent/wepy/tree/2.0.x/packages/use-promisify) `use-promisify` library
+- [Taro](https://github.com/NervJS/taro)
