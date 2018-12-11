@@ -4,11 +4,7 @@ import { promisify } from './lib/promisify'
 import { simplifyArgs } from './lib/simplified-args'
 import { makeObj } from './lib/utils'
 import { requestQueue } from './lib/request-queue'
-import {
-	normalizePromisifiedAlipayApis,
-	normalizeNoPromiseAlipayApis,
-	toBeNormalized
-} from './lib/normalize-alipay-apis'
+import { normalizePromisifiedAlipayApis, normalizeNoPromiseAlipayApis } from './lib/normalize-alipay-apis'
 import { genSpecialApis } from './lib/gen-special-apis'
 import { onAndSyncApis, noPromiseApis, otherApis } from './lib/baseNativeApis'
 
@@ -135,13 +131,9 @@ var index = {
 			}
 		})
 
-		// 抹平 alipay api 返回结果的差异
+		// 抹平支持 promise 化的 alipay api 返回结果差异
 		if (platform === 'alipay') {
-			let bak = {}
-			for (let key in toBeNormalized) {
-				bak[key] = baseApis[key]
-				baseApis[key] = normalizePromisifiedAlipayApis(key, toBeNormalized[key], bak)
-			}
+			normalizePromisifiedAlipayApis(baseApis)
 		}
 
 		Object.defineProperty(Vue.prototype, '$api', {
